@@ -1,0 +1,37 @@
+# ~~~~~~~~~~~~~~~~~~~~~~
+# Dev: SpionLennart
+# Project: SpawnSystem
+# Version: 1.7
+# ~~~~~~~~~~~~~~~~~~~~~~
+
+command /setspawn [<number>]:
+	permission: staff.spawns.setspawn
+	trigger:
+		if arg is set:
+			set {spawn_%arg%} to player's location
+			send "&bSetting spawn %arg% to %{spawn_%arg%}%!"
+		else:
+			set {spawn_default} to player's location
+			send "&bSetting default spawn to %{spawn_default}%!"
+
+command /spawn [<number>]:
+	trigger:
+		if arg is set:
+			if {spawn_%arg%} is set:
+					if player has permission "spawns.spawn%arg%":
+						teleport player to {spawn_%arg%}
+					else:
+						send "&cYou dont have permissions!"
+			else:
+				send "&cThat spawn does not exist."
+		else:
+			if {spawn_default} is set:
+				teleport player to {spawn_default}
+			else:
+				send "&cThe default spawn does not exist."
+
+on join:
+	if {spawn_default} is set:
+		teleport player to {spawn_default}
+	else:
+		send "&cHello, please ask an Admin to set the default spawn."

@@ -1,0 +1,28 @@
+command /setwarp <text>:
+	permission: warps.setwarp
+	trigger:
+		if {warp-%arg%} is not set:
+			set {warp-%arg%} to player's location
+			send "&bCreated Warp %arg% at &a%{warp-%arg%}%&b!"
+		else:
+			send "&cThis Warp already exists!"
+
+command /delwarp <text>:
+	permission: warps.delwarp
+	trigger:
+		if {warp-%arg%} is set:
+			delete {warp-%arg%}
+			send "&bSuccessfully deleted Warp &a%arg%&b!"
+		else:
+			send "&cThis Warp doesn't exist."
+
+command /warp <text>:
+	trigger:
+		if {warp-%arg%} is set:
+			if player has permission "warps.warp-%arg%":
+				teleport player to {warp-%arg%}
+				send "&aTeleporting!"
+			else:
+				send "&cYou don't have permission for that warp!"
+		else:
+			send "&cThis warp is not set!"

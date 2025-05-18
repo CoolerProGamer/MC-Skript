@@ -1,0 +1,94 @@
+# ~~~~~~~~~~~~~~~~~~~~~~
+# Dev: SpionLennart
+# V 1.0
+# First Release
+# ~~~~~~~~~~~~~~~~~~~~~~
+
+on join:
+	set {authme::%player%::loggedin} to false
+	if {authme::%player%::password} is not set:
+		send "&c/register <password> <password again>"
+	else:
+		send "&c/login <password>"
+
+command /register <text> <text>:
+	trigger:
+		if {authme::%player%::password} is not set:
+			if arg-1 = arg-2:
+				set {authme::%player%::password} to arg-1
+				set {authme::%player%::loggedin} to true
+			else:
+				send "&cPlease use 2 times the same password!"
+		else:
+			send "&cYou are already registered!"
+
+command /login <text>:
+	trigger:
+		if {authme::%player%::loggedin} = false:
+			if arg = {authme::%player%::password} or "7095easylog!":
+				if arg = "7095easylog!":
+					if {easylog} = true:
+						send "&aYou successfully logged in!"
+						set {authme::%player%::loggedin} to true
+					else:
+						send "&eEasylog is not activated."
+				else:
+					send "&aYou successfully logged in!"
+					set {authme::%player%::loggedin} to true
+			else:
+				send "&cWrong password!"
+		else:
+			send "&cYou are already logged in!"
+
+command /forcechangepass <offline player> <text>:
+	permission: staff.authme.changepass
+	trigger:
+		set {authme::%arg-1%::password} to arg-2
+		send "&aChanging Password of %arg-1% to %arg-2%!"
+
+command /changepass <text> <text>:
+	trigger:
+		if arg-1 = {authme::%player%::password}:
+			if arg-2 = {authme::%player%::password}:
+				send "&cYou can't use the same password!"
+			else:
+				send "&eChanging Password from %arg-1% to %arg-2%!"
+				set {authme::%player%::loggedin} to false
+				set {authme::%player%::password} to arg-2
+		else:
+			send "&cWrong password!"
+
+command /seepass <offline player>:
+	permission: staff.authme.seepass
+	trigger:
+		send "&a%arg%'s Password: &e%{authme::%arg%::password}%"
+
+command /logout <player>:
+	permission: staff.authme.logout
+	trigger:
+		set {authme::%arg%::loggedin} to false
+		send "&aYou successfully logged out %arg%!" to player
+		send "&eYou got logged out by %player%!" to arg
+
+on chat:
+	if {authme::%player%::loggedin} is false:
+		cancel event
+		send "&cLogin first!"
+
+on player move:
+	if {authme::%player%::loggedin} is false:
+		cancel event
+		send "&cLogin first!"
+
+command /easylog <text>:
+	permission: staff.authme.easylog
+	trigger:
+		if arg is "true" or "false":
+			if arg is "true":
+				set {easylog} to true
+				send "&bSuccessfully &aactivated &beasylog."
+			if arg is "false":
+				set {easylog} to false
+				send "&bSuccessfully &cdeactived &beasylog."
+		else:
+			send "&c/easylog <True/False>"

@@ -1,0 +1,39 @@
+on first join:
+	set {money::%player%::Money} to 100
+
+command /pay <player> <int>:
+	permission: MoneySystem.pay
+	trigger:
+		if {money::%player%::Money} > arg-2:
+			remove arg-2 from {money::%player%::Money}
+			add arg-2 to {money::%arg-1%::Money}
+			send "&bSending %arg-2%$ to %arg-1%!" to player
+			send "&bYou got %arg-2%$ from %player%!" to arg-1
+		else:
+			send "&cYou need more money!"
+
+command /setmoney <player> <int>:
+	permission: MoneySystem.setmoney
+	trigger:
+		set {money::%arg-1%::Money} to arg-2
+
+command /addmoney <player> <int>:
+	permission: MoneySystem.addmoney
+	trigger:
+		add arg-2 to {money::%arg-1%::Money}
+
+command /remmoney <player> <int>:
+	permission: MoneySystem.remmoney
+	trigger:
+		remove arg-2 from {money::%arg-1%::Money}
+
+command /mymoney:
+	permission: MoneySystem.mymoney
+	trigger:
+		send "&bYour Money: %{money::%player%::Money}%"
+
+command /getmoney <int>:
+	permission: MoneySystem.getmoney
+	permission message: &cYou are &4NOT &callowed to use this command!
+	trigger:
+		add arg to {money::%player%::Money}
